@@ -4,6 +4,7 @@ interface IUserSchema {
     name: String,
     email: String,
     password: String,
+    movies: [],
     createdAt?: Date,
     updateAt?: Date
 }
@@ -22,6 +23,9 @@ const userSchema = new Schema<IUserSchema> ({
         type: String,
         required: true
     },
+    movies: [{
+        type: Schema.Types.ObjectId, ref:"Movie"
+    }]
 }, {timestamps: true});
 
 
