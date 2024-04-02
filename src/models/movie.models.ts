@@ -4,7 +4,7 @@ interface IMovieSchema {
     name: String,
     image: String,
     score: Number,
-    genres: String[],
+    genres: [],
     createdAt?: Date,
     updateAt?: Date
 }
