@@ -13,10 +13,10 @@ export const getAllMovies = async (req: Request, res: Response) => {
 }
 
 export const createMovie = async (req: Request, res: Response) => {
-   const {name, image} = req.body
+   const {name, image, score} = req.body
    const {userId} = req.params
    try {
-        const movie = await MovieModel.create({name, image})
+        const movie = await MovieModel.create({name, image, score})
         await UserModel.findByIdAndUpdate({_id: userId}, { $push: {movies: movie._id}})
         res.status(201).send(movie)
    } catch (error) {
@@ -24,3 +24,32 @@ export const createMovie = async (req: Request, res: Response) => {
 
    }
 }
+
+export const updateMovie = async (req: Request, res: Response) => {
+    const {name, image, score} =  req.body
+    const {movieId} = req.params
+    try {
+        const movieUpdated = await MovieModel.findByIdAndUpdate(
+            {_id: movieId}, 
+            {name, image, score},
+            {new:true}
+        )
+        res.status(201).send(movieUpdated)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+}
+
+export const deleteMovie = async (req: Request, res: Response) => {
+    const {movieId} = req.params
+    try {
+        const movieDeleted = await MovieModel.findByIdAndDelete(
+            {_id: movieId} 
+        )
+        res.status(201).send(movieDeleted)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+    
+}
+
