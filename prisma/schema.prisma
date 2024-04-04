@@ -28,10 +28,18 @@ model Movies {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   image    String
+  score    Int
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
   userId   String   @db.ObjectId
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  genre Genres[]
 }
 
 
+model Genres {
+  id String @id @default(auto()) @map("_id")  @db.ObjectId
+  name String
+  movieId String @db.ObjectId
+  movie Movies @relation(fields: [movieId], references: [id], onDelete: Cascade)
+}
