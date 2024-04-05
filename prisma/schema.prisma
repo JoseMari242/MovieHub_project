@@ -41,5 +41,5 @@ model Genres {
   id String @id @default(auto()) @map("_id")  @db.ObjectId
   name String
   movieId String @db.ObjectId
-  movie Movies @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movies Movies @relation(fields: [movieId], references: [id], onDelete: Cascade)
 }

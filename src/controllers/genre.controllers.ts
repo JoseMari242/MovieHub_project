@@ -7,7 +7,11 @@ import movieModel from "../models/movie.models"
 
 export const getAllMGenres = async (req: Request, res: Response) => {
     try {
-        const allGenres= await prisma.genres.findMany()
+        const allGenres= await prisma.genres.findMany({
+            include: {
+                movies: true
+            }
+        })
         res.status(201).send(allGenres)
     } catch (error) {
         res.status(400).send(error)
@@ -19,7 +23,7 @@ export const createGenre = async (req: Request, res: Response) => {
    const {movieId} = req.params
    try {
         const genre = await prisma.genres.create({
-            data: {name, movie: {connect: {id:movieId}}}
+            data: {name, movies: {connect: {id:movieId}}}
         })
         res.status(201).send(genre)
    } catch (error) {
