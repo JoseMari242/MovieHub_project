@@ -29,7 +29,7 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
     const {name, email, password} =  req.body
-    const {userId} = req.params
+    const userId = parseInt(req.params.userId)
     try {
         const userUpdated = await prisma.user.update({
             where: {id:userId},
@@ -42,7 +42,7 @@ export const updateUser = async (req: Request, res: Response) => {
 }
 
 export const deleteUser = async (req: Request, res: Response) => {
-    const {userId} = req.params
+    const userId = parseInt(req.params.userId)
     try {
         const userDeleted = await prisma.user.delete({
             where: {id:userId}})

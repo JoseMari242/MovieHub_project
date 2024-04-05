@@ -19,22 +19,26 @@ export const getAllMGenres = async (req: Request, res: Response) => {
 }
 
 export const createGenre = async (req: Request, res: Response) => {
-   const {name} = req.body
-   const {movieId} = req.params
-   try {
-        const genre = await prisma.genres.create({
-            data: {name, movies: {connect: {id:movieId}}}
-        })
-        res.status(201).send(genre)
-   } catch (error) {
-        res.status(400).send(error)
-
-   }
-}
+    const { name } = req.body;
+    if(!name) {
+        return res.status(400).send({message:"X"})
+    }
+    try {
+         const genre = await prisma.genres.create({
+             data: {
+                 name: name
+             }
+         });
+         res.status(201).send(genre);
+    } catch (error) {
+         res.status(400).send(error);
+    }
+ }
+ 
 
 export const updateGenre = async (req: Request, res: Response) => {
     const {name} =  req.body
-    const {genreId} = req.params
+    const genreId = parseInt(req.params.genreId)
     try {
         const genreUpdated = await prisma.genres.update({
             where: {id: genreId},
@@ -47,7 +51,7 @@ export const updateGenre = async (req: Request, res: Response) => {
 }
 
 export const deleteGenre = async (req: Request, res: Response) => {
-    const {genreId} = req.params
+    const genreId = parseInt(req.params.genreId)
     try {
         const genreDeleted = await prisma.genres.delete({
             where: {id: genreId}
