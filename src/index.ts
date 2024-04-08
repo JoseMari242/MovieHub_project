@@ -12,6 +12,6 @@ app.listen(PORT, async () => {
         (`Server is running on port ${PORT} and is connected to db MovieHub from Atlas`)
       );
     } catch (error) {
-      console.log("error to connect, try again");
+      console.log("error to connect, try again", error);
     }
   });
