@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { createGenre, deleteGenre, getAllMGenres, updateGenre } from "../controllers/genre.controllers";
+import { createGenres, deleteGenre, getAllGenres, updateGenre } from "../controllers/genre.controllers";
 
 
 
 const genreRoutes  = Router()
 
-genreRoutes.get("/", getAllMGenres)
-genreRoutes.post("/:movieId", createGenre )
+genreRoutes.get("/", getAllGenres)
+genreRoutes.post("/", createGenres )
 genreRoutes.patch("/:genreId", updateGenre)
 genreRoutes.delete("/:genreId", deleteGenre)
 
