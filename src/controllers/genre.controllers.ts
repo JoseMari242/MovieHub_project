@@ -1,8 +1,5 @@
 import {Request, Response} from "express"
 import prisma from "../db/client";
-import UserModel from "../models/user.models"
-import genreModel from "../models/genre.models"
-import movieModel from "../models/movie.models"
 
 
 export const getAllGenres = async (req:Request, res:Response) => {
