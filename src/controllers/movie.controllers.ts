@@ -27,11 +27,8 @@ export const getAllMovies = async (req: Request, res: Response) => {
 
 
 export const createMovie = async (req: Request, res: Response) => {
-    
-    console.log("required body", req.body) 
-    const {name, image, score, genre} = req.body
-    
-   const userId = parseInt(req.params.userId)
+    const {name, image, score, genre} = req.body 
+    const userId = parseInt(req.params.userId)
 
    if (!name || !image || !score) {
     return res.status(400).send({message: "No name no image"})
@@ -98,7 +95,6 @@ export const updateMovie = async (req: Request, res: Response) => {
 
     try {
         const movieUpdated = await prisma.$transaction(async (prisma) => {
-            // Actualizar la información de la película
             const updatedMovie = await prisma.movies.update({
                 where: { id: movieId },
                 data: { name, image, score },
@@ -107,10 +103,9 @@ export const updateMovie = async (req: Request, res: Response) => {
                 }
             });
 
-            // Actualizar los géneros asociados con la película
             if (genre && genre.length) {
                 const updateGenre = genre.map((genreId: number) => ({
-                    movieId: updatedMovie.id, // Utilizamos updatedMovie para obtener el ID actualizado de la película
+                    movieId: updatedMovie.id, 
                     genreId: genreId
                 }));
 
