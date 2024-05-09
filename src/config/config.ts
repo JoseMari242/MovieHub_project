@@ -9,6 +9,7 @@ type DbConfig = {
     URI: string
 }
 type EnvironmentConfig = {
+    auth0: Auth0Config;
     app: AppConfig
     db: DbConfig
 }
@@ -16,6 +17,11 @@ type EnvironmentConfig = {
 type AppConfig = {
     PORT: string | number
 }
+type Auth0Config = {
+    client_origin: string,
+    audience: string,
+    issuer: string
+  }
 
 if (process.env.NODE_ENV === "production"){
     dotenv.config({path: ".env.production"})
@@ -31,7 +37,12 @@ const CONFIG: Tconfig = {
         },
         db: {
             URI: process.env.MONGODB_URI || "mongodb://localhost:27017"
-        }
+        },
+        auth0: {
+            client_origin: process.env.APP_ORIGIN || "error",
+            audience: process.env.AUTH0_AUDIENCE || "error",
+            issuer: process.env.AUTH0_ISSUER || "error"
+          }
     },
     production: {
         app: {
@@ -39,7 +50,12 @@ const CONFIG: Tconfig = {
         },
         db: {
             URI: process.env.MONGODB_URI || "mongodb://localhost:27017"
-        }
+        },
+        auth0: {
+            client_origin: process.env.APP_ORIGIN || "error",
+            audience: process.env.AUTH0_AUDIENCE || "error",
+            issuer: process.env.AUTH0_ISSUER || "error"
+          }
     }
 }
 
