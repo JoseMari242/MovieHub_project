@@ -1,5 +1,9 @@
 import {Request, Response} from "express"
 import prisma from "../db/client";
+import fs from 'fs-extra';
+import { uploadImageCloudinary } from "../utils/cloudinary";
+
+
 
 
 export const getAllMovies = async (req: Request, res: Response) => {
@@ -26,12 +30,15 @@ export const getAllMovies = async (req: Request, res: Response) => {
 }
 
 
+
+
 export const createMovie = async (req: Request, res: Response) => {
-    const {name, image, score, genre} = req.body 
+    const {name, score, genre} = req.body 
+    const image = req.files?.image;
     const userId = parseInt(req.params.userId)
 
-   if (!name || !image || !score) {
-    return res.status(400).send({message: "No name no image"})
+   if (!name || !image) {
+    return res.status(400).send({message: "No name no image no score"})
    }
 
    if (!userId) {
@@ -39,47 +46,69 @@ export const createMovie = async (req: Request, res: Response) => {
    }
 
    try {
-
-    const movie = await prisma.$transaction( async (prisma) => {
-    const newMovie = await prisma.movies.create({
-        data: {
-            name,
-            image,
-            score,
-            userId,
-        }
-    })
-    
-    if(genre && genre.length) {
-        const createGenres = genre.map((genreId: number) => ({
-            movieId: newMovie.id, 
-            genreId: genreId
-        }));
-
-    await prisma.movieGenre.createMany({
-        data: createGenres       
-    });
+    if (Array.isArray(image)) {
+        return res.status(400).json({
+            msg: 'You can only upload one file per movie.'
+        })
+    } else {
+        const result = await uploadImageCloudinary(image.tempFilePath);
+        const newMovie = await prisma.movies.create({
+            data: {
+                name,
+                score,
+                genre,
+                image: result.secure_url,
+                public_id_image: result.public_id,
+                userId
+            },
+        });
+        await fs.unlink(image.tempFilePath);
+        return res.status(201).send({
+            msg: 'New movie created',
+            data: newMovie
+        })
     }
-    return prisma.movies.findUnique({
-        where: {id: newMovie.id},
-        include: {
-            genre: true
-        }
-    })
-    });
 
-    res.status(201).send({
-        message: "Create movie",
-        data: movie
-    })
+} catch (error) {
+     res.status(400).send(error)
+
+}
+}
+    // const movie = await prisma.$transaction( async (prisma) => {
+    // const newMovie = await prisma.movies.create({
+    //     data: {
+    //         name,
+    //         image,
+    //         score,
+    //         userId,
+    //     }
+    // })
+    
+    // if(genre && genre.length) {
+    //     const createGenres = genre.map((genreId: number) => ({
+    //         movieId: newMovie.id, 
+    //         genreId: genreId
+    //     }));
+
+    // await prisma.movieGenre.createMany({
+    //     data: createGenres       
+    // });
+    // }
+    // return prisma.movies.findUnique({
+    //     where: {id: newMovie.id},
+    //     include: {
+    //         genre: true
+    //     }
+    // })
+    // });
+
+    // res.status(201).send({
+    //     message: "Create movie",
+    //     data: movie
+    // })
    
 
 
-   } catch (error) {
-        res.status(400).send(error)
-
-   }
-}
 
 export const updateMovie = async (req: Request, res: Response) => {
     const { name, image, score, genre } = req.body;

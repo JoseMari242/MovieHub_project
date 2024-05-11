@@ -1,6 +1,12 @@
 import {Request, Response} from "express"
 import prisma from "../db/client";
 
+
+
+
+
+
+
 export const getAllUsers = async(req: Request, res: Response) => {
     try {
         const allUsers = await prisma.user.findMany({

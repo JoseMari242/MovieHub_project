@@ -12,7 +12,13 @@ type EnvironmentConfig = {
     auth0: Auth0Config;
     app: AppConfig
     db: DbConfig
+    cloudinary: CloudinaryConfig;
 }
+type CloudinaryConfig = {
+    cloudinary_name: string;
+    api_key: string;
+    api_secret: string;
+  };
 
 type AppConfig = {
     PORT: string | number
@@ -42,6 +48,11 @@ const CONFIG: Tconfig = {
             client_origin: process.env.APP_ORIGIN || "error",
             audience: process.env.AUTH0_AUDIENCE || "error",
             issuer: process.env.AUTH0_ISSUER || "error"
+          },
+        cloudinary: {
+            cloudinary_name: process.env.CLOUDINARY_NAME || "error",
+            api_key: process.env.CLOUDINARY_API_KEY || "error",
+            api_secret: process.env.CLOUDINARY_API_SECRET || "error",
           }
     },
     production: {
@@ -55,7 +66,12 @@ const CONFIG: Tconfig = {
             client_origin: process.env.APP_ORIGIN || "error",
             audience: process.env.AUTH0_AUDIENCE || "error",
             issuer: process.env.AUTH0_ISSUER || "error"
-          }
+          },
+        cloudinary: {
+              cloudinary_name: process.env.CLOUDINARY_NAME || "error",
+              api_key: process.env.CLOUDINARY_API_KEY || "error",
+              api_secret: process.env.CLOUDINARY_API_SECRET || "error",
+            }
     }
 }
 
