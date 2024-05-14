@@ -34,7 +34,14 @@ export const getAllMovies = async (req: Request, res: Response) => {
 
 export const createMovie = async (req: Request, res: Response) => {
     const {name, score, genre} = req.body 
+   
+ 
     const image = req.files?.image;
+   
+    let ScoreToNumber = parseInt(score)
+    ScoreToNumber  = score;
+    let GenreToNumber = parseInt(genre);
+    GenreToNumber = genre
     const userId = parseInt(req.params.userId)
 
    if (!name || !image) {
@@ -47,21 +54,25 @@ export const createMovie = async (req: Request, res: Response) => {
 
    try {
     if (Array.isArray(image)) {
+        console.log("estoy en el primer if")
         return res.status(400).json({
             msg: 'You can only upload one file per movie.'
-        })
+        }) 
+        
     } else {
+        console.log("estoy en el else")
         const result = await uploadImageCloudinary(image.tempFilePath);
         const newMovie = await prisma.movies.create({
             data: {
                 name,
                 score,
                 genre,
-                image: result.secure_url,
-                public_id_image: result.public_id,
+                image: await result.secure_url,
+                public_id_image: await result.public_id,
                 userId
             },
         });
+        console.log({newMovie})
         await fs.unlink(image.tempFilePath);
         return res.status(201).send({
             msg: 'New movie created',
